@@ -254,23 +254,15 @@ MIT
 
 <br/>
 
-```
- ╔══════════════════════════════════════════════════════════╗
- ║                                                          ║
- ║   ┌─ Built with ♠ by ─────────────────────────────────┐  ║
- ║   │                                                    │  ║
- ║   │  Georgios Panagopoulos                             │  ║
- ║   │  AI Engineer · Full-Stack Dev     │  ║
- ║   │                                                    │  ║
- ║   │  gh  → github.com/GiorgosPanagopoulos             │  ║
- ║   │  in  → linkedin.com/in/georgios-panagopoulos-     │  ║
- ║   │                9253842ba                           │  ║
- ║   │                                                    │  ║
- ║   └────────────────────────────────────────────────────┘  ║
- ║                                                          ║
- ╚══════════════════════════════════════════════════════════╝
-```
+### ⚡ Built by
 
-<sub>⚡ Powered by mass amounts of caffeine, mass amounts of curiosity</sub>
+**Georgios Panagopoulos**
+
+Full-Stack Developer
+
+[![GitHub](https://img.shields.io/badge/GitHub-GiorgosPanagopoulos-181717?style=flat-square&logo=github)](https://github.com/GiorgosPanagopoulos)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Georgios_Panagopoulos-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/georgios-panagopoulos-9253842ba)
+
+<sub>☕ Powered by mass amounts of caffeine & mass amounts of curiosity</sub>
 
 </div>
