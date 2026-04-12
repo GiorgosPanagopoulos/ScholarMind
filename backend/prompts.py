@@ -31,11 +31,24 @@ Return ONLY valid JSON with no additional text, markdown, or explanation:
 Where confidence is a float between 0.0 (low confidence) and 1.0 (high confidence) based on source quality and consistency of information."""
 
 
+APA_CITATION_INSTRUCTIONS = """Use APA (7th edition) citation style throughout:
+- In-text citations: (Author, Year) — e.g., (Smith, 2021) or (Smith & Jones, 2021)
+- References section format (one per line):
+  Author, A. A. (Year). Title of work. Source Name. URL"""
+
+IEEE_CITATION_INSTRUCTIONS = """Use IEEE citation style throughout:
+- In-text citations: numbered in square brackets — e.g., [1], [2], [1], [3]
+- References section format (one per line, numbered sequentially):
+  [1] A. Author, "Title of work," Source Name, Year. [Online]. Available: URL"""
+
 REPORT_WRITER_PROMPT = """You are an expert academic report writer.
 
 Using the synthesized research findings and sources below, write a structured academic report. Use formal academic tone and Markdown formatting.
 
 Topic: {topic}
+
+Citation Format: {citation_format}
+{citation_instructions}
 
 Research Findings:
 {findings}
@@ -56,7 +69,7 @@ Write the report with these exact sections using Markdown headers:
 (Key takeaways, implications, and limitations)
 
 ## References
-(APA-format citations, numbered, for all sources used)
+(List all sources in proper {citation_format} format as described above)
 
 Write the complete report now:"""
 

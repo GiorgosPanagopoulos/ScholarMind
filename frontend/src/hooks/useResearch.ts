@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import type { ResearchState, AgentUpdate, Source, QAPair } from '../types';
+import type { ResearchState, AgentUpdate, Source, QAPair, CitationFormat } from '../types';
 
 const INITIAL_STATE: ResearchState = {
   status: 'idle',
@@ -10,6 +10,7 @@ const INITIAL_STATE: ResearchState = {
   sources: [],
   currentStep: 0,
   totalSteps: 0,
+  citationFormat: 'APA',
 };
 
 function timestamp(): string {
@@ -32,11 +33,12 @@ export function useResearch() {
 
   // ── startResearch ─────────────────────────────────────────────────────
 
-  const startResearch = useCallback(async (topic: string) => {
+  const startResearch = useCallback(async (topic: string, citationFormat: CitationFormat = 'APA') => {
     setState({
       ...INITIAL_STATE,
       status: 'planning',
       topic,
+      citationFormat,
       activities: [`[${timestamp()}] Starting research on: "${topic}"`],
     });
     reportRef.current = '';
@@ -45,7 +47,7 @@ export function useResearch() {
       const response = await fetch('/api/research', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, citation_format: citationFormat }),
       });
 
       if (!response.body) throw new Error('No response body');
@@ -259,6 +261,7 @@ export function useResearch() {
           report_text: state.report,
           topic: state.topic,
           sources: state.sources,
+          citation_format: state.citationFormat,
         }),
       });
 

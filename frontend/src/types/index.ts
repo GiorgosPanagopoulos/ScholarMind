@@ -1,3 +1,5 @@
+export type CitationFormat = 'APA' | 'IEEE';
+
 export interface AgentUpdate {
   step: string;
   sub_step?: number;
@@ -31,6 +33,7 @@ export interface ResearchState {
   sources: Source[];
   currentStep: number;
   totalSteps: number;
+  citationFormat: CitationFormat;
 }
 
 export interface QAPair {

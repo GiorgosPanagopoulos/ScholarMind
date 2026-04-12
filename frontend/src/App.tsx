@@ -117,7 +117,7 @@ function App() {
               {[
                 { icon: '🧠', title: 'Smart Planning', desc: 'Claude breaks your topic into focused sub-questions' },
                 { icon: '🔍', title: 'Web Search', desc: 'Live DuckDuckGo search for up-to-date information' },
-                { icon: '📄', title: 'Academic Report', desc: 'Structured report with APA citations and PDF export' },
+                { icon: '📄', title: 'Academic Report', desc: 'Structured report with APA or IEEE citations and PDF export' },
               ].map((card, i) => (
                 <div
                   key={i}

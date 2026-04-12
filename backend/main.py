@@ -50,6 +50,7 @@ app.add_middleware(
 
 class ResearchRequest(BaseModel):
     topic: str
+    citation_format: str = "APA"
 
 
 class FollowupRequest(BaseModel):
@@ -62,6 +63,7 @@ class ExportPdfRequest(BaseModel):
     report_text: str
     topic: str
     sources: list[dict] = []
+    citation_format: str = "APA"
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +80,7 @@ async def health():
 async def research(req: ResearchRequest):
     async def event_stream():
         try:
-            async for update in _agent.research(req.topic):
+            async for update in _agent.research(req.topic, citation_format=req.citation_format):
                 yield f"data: {json.dumps(update)}\n\n"
         except Exception as exc:
             error_event = {"step": "error", "message": str(exc), "data": None}
@@ -113,6 +115,7 @@ async def export_pdf(req: ExportPdfRequest):
         report_text=req.report_text,
         topic=req.topic,
         sources=req.sources,
+        citation_format=req.citation_format,
     )
 
     safe_topic = req.topic[:40].replace(" ", "_").replace("/", "-")

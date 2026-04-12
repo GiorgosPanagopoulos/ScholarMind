@@ -157,6 +157,7 @@ class ReportGenerator:
         report_text: str,
         topic: str,
         sources: list[dict],
+        citation_format: str = "APA",
     ) -> bytes:
         """Create a professional PDF from report_text and return as bytes."""
         buffer = BytesIO()
@@ -195,12 +196,22 @@ class ReportGenerator:
             story.append(HRFlowable(width="100%", thickness=0.5, color=colors.lightgrey))
             story.append(Paragraph("Additional Source Index", styles["h1"]))
             for idx, src in enumerate(sources, 1):
-                title = src.get("title", "Untitled")
+                title = _clean_markdown(src.get("title", "Untitled"))
                 url = src.get("url", "")
-                snippet = src.get("snippet", "")
-                ref_text = f"[{idx}] {_clean_markdown(title)}. {_clean_markdown(snippet)}"
-                if url:
-                    ref_text += f" &lt;{url}&gt;"
+                snippet = _clean_markdown(src.get("snippet", ""))
+                if citation_format == "IEEE":
+                    ref_text = f'[{idx}] "{title}."'
+                    if snippet:
+                        ref_text += f" {snippet}"
+                    if url:
+                        ref_text += f" [Online]. Available: {url}"
+                else:
+                    # APA default
+                    ref_text = f"{title}."
+                    if snippet:
+                        ref_text += f" {snippet}."
+                    if url:
+                        ref_text += f" Retrieved from {url}"
                 story.append(Paragraph(ref_text, styles["ref"]))
 
         doc.build(story, onFirstPage=_add_page_number, onLaterPages=_add_page_number)

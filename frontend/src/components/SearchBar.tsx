@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import type { CitationFormat } from '../types';
 
 interface Props {
-  onSearch: (topic: string) => void;
+  onSearch: (topic: string, citationFormat: CitationFormat) => void;
   onReset: () => void;
   isLoading: boolean;
   hasResult: boolean;
@@ -15,11 +16,12 @@ const EXAMPLE_TOPICS = [
 
 export function SearchBar({ onSearch, onReset, isLoading, hasResult }: Props) {
   const [value, setValue] = useState('');
+  const [citationFormat, setCitationFormat] = useState<CitationFormat>('APA');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     const topic = value.trim();
-    if (topic && !isLoading) onSearch(topic);
+    if (topic && !isLoading) onSearch(topic, citationFormat);
   };
 
   const handleExample = (topic: string) => {
@@ -37,6 +39,27 @@ export function SearchBar({ onSearch, onReset, isLoading, hasResult }: Props) {
           disabled={isLoading}
           className="flex-1 bg-gray-800 border border-gray-600 text-white placeholder-gray-400 rounded-xl px-5 py-3.5 text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 disabled:opacity-60 transition-all"
         />
+
+        {/* Citation format toggle */}
+        {!hasResult && (
+          <div className="flex items-center bg-gray-800 border border-gray-600 rounded-xl overflow-hidden flex-shrink-0">
+            {(['APA', 'IEEE'] as CitationFormat[]).map(fmt => (
+              <button
+                key={fmt}
+                type="button"
+                onClick={() => setCitationFormat(fmt)}
+                disabled={isLoading}
+                className={`px-4 py-3.5 text-sm font-medium transition-colors disabled:opacity-60 ${
+                  citationFormat === fmt
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                }`}
+              >
+                {fmt}
+              </button>
+            ))}
+          </div>
+        )}
 
         {hasResult ? (
           <button

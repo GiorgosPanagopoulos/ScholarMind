@@ -9,7 +9,9 @@ from typing import AsyncGenerator
 import anthropic
 
 from prompts import (
+    APA_CITATION_INSTRUCTIONS,
     FOLLOWUP_PROMPT,
+    IEEE_CITATION_INSTRUCTIONS,
     PLANNER_PROMPT,
     QUERY_REWRITER_PROMPT,
     REPORT_WRITER_PROMPT,
@@ -55,7 +57,7 @@ class ResearchAgent:
     # Main research pipeline
     # ------------------------------------------------------------------
 
-    async def research(self, topic: str) -> AsyncGenerator[dict, None]:
+    async def research(self, topic: str, citation_format: str = "APA") -> AsyncGenerator[dict, None]:
         """Streaming generator that yields step dicts through the research pipeline."""
 
         # ── 1. PLAN ────────────────────────────────────────────────────
@@ -193,10 +195,15 @@ class ResearchAgent:
             f"### {sq['sub_question']}" for sq in synthesis_results
         )
 
+        citation_instructions = (
+            APA_CITATION_INSTRUCTIONS if citation_format == "APA" else IEEE_CITATION_INSTRUCTIONS
+        )
         report_prompt = REPORT_WRITER_PROMPT.format(
             topic=topic,
             findings=findings_text,
             section_placeholders=section_placeholders,
+            citation_format=citation_format,
+            citation_instructions=citation_instructions,
         )
 
         try:
