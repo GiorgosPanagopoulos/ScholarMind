@@ -1,4 +1,5 @@
 export type CitationFormat = 'APA' | 'IEEE';
+export type Language = 'EN' | 'GR';
 
 export interface AgentUpdate {
   step: string;

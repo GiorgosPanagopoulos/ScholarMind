@@ -1,24 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import type { QAPair } from '../types';
+import { MessageCircle, Send, Loader2 } from 'lucide-react';
+import type { QAPair, Language } from '../types';
+import { translations } from '../i18n';
 
 interface Props {
   qaHistory: QAPair[];
   report: string;
   onAsk: (question: string, reportSummary: string) => Promise<void>;
-}
-
-function SendIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-    </svg>
-  );
+  lang: Language;
 }
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1.5 px-4 py-2.5 bg-gray-700/60 rounded-2xl rounded-tl-sm w-fit">
+    <div className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-700/60 rounded-2xl rounded-tl-sm w-fit">
       <span className="typing-dot" />
       <span className="typing-dot" />
       <span className="typing-dot" />
@@ -26,7 +21,8 @@ function TypingIndicator() {
   );
 }
 
-export function FollowUp({ qaHistory, report, onAsk }: Props) {
+export function FollowUp({ qaHistory, report, onAsk, lang }: Props) {
+  const T = translations[lang];
   const [input, setInput] = useState('');
   const [isAsking, setIsAsking] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -47,16 +43,16 @@ export function FollowUp({ qaHistory, report, onAsk }: Props) {
   };
 
   return (
-    <div className="bg-gray-800/90 rounded-2xl border border-gray-700/80 shadow-xl shadow-black/20 overflow-hidden">
+    <div className="glass-card shadow-xl shadow-black/20 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-700/80">
-        <h2 className="text-base font-semibold text-white flex items-center gap-2">
-          <span className="w-7 h-7 rounded-lg bg-indigo-900/60 border border-indigo-700/40 flex items-center justify-center text-sm">
-            💬
-          </span>
-          Follow-Up Questions
-        </h2>
-        <p className="text-xs text-gray-500 mt-1.5 ml-9">Ask anything about the research findings</p>
+      <div className="px-6 py-4 border-b border-white/8 flex items-start gap-3">
+        <span className="w-7 h-7 rounded-lg bg-indigo-900/60 border border-indigo-700/40 flex items-center justify-center shrink-0 mt-0.5">
+          <MessageCircle className="w-4 h-4 text-indigo-400" />
+        </span>
+        <div>
+          <h2 className="text-base font-semibold text-white">{T.followUpTitle}</h2>
+          <p className="text-xs text-slate-500 mt-0.5">{T.followUpSubtitle}</p>
+        </div>
       </div>
 
       {/* Q&A history */}
@@ -79,9 +75,9 @@ export function FollowUp({ qaHistory, report, onAsk }: Props) {
                 <span className="shrink-0 w-7 h-7 rounded-full bg-emerald-800/80 border border-emerald-600/40 flex items-center justify-center text-xs text-emerald-200 font-bold shadow-sm mt-0.5">
                   A
                 </span>
-                <div className="max-w-[85%] bg-gray-700/60 border border-gray-600/40 rounded-2xl rounded-tl-sm shadow-md overflow-hidden">
+                <div className="max-w-[85%] bg-slate-700/60 border border-white/8 rounded-2xl rounded-tl-sm shadow-md overflow-hidden">
                   {pair.answer ? (
-                    <div className="text-gray-200 text-sm markdown-content px-4 py-2.5">
+                    <div className="text-slate-200 text-sm markdown-content px-4 py-2.5">
                       <ReactMarkdown>{pair.answer}</ReactMarkdown>
                     </div>
                   ) : (
@@ -98,15 +94,15 @@ export function FollowUp({ qaHistory, report, onAsk }: Props) {
       )}
 
       {/* Input */}
-      <div className={`px-5 py-4 ${qaHistory.length > 0 ? 'border-t border-gray-700/80' : ''}`}>
+      <div className={`px-5 py-4 ${qaHistory.length > 0 ? 'border-t border-white/8' : ''}`}>
         <form onSubmit={handleSubmit} className="flex gap-2.5">
           <input
             type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
-            placeholder="Ask a follow-up question…"
+            placeholder={T.followUpPlaceholder}
             disabled={isAsking}
-            className="flex-1 bg-gray-700/60 border border-gray-600/80 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-55 transition-all duration-200"
+            className="flex-1 bg-slate-700/60 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-55 transition-all duration-200"
           />
           <button
             type="submit"
@@ -114,11 +110,11 @@ export function FollowUp({ qaHistory, report, onAsk }: Props) {
             className="shrink-0 flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all duration-200 shadow-md shadow-indigo-900/30 active:scale-[0.97]"
           >
             {isAsking ? (
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <SendIcon />
+              <Send className="w-4 h-4" />
             )}
-            <span>{isAsking ? 'Asking…' : 'Ask'}</span>
+            <span>{isAsking ? T.asking : T.ask}</span>
           </button>
         </form>
       </div>

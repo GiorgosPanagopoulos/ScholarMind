@@ -22,15 +22,6 @@ export function useResearch() {
   const [qaHistory, setQaHistory] = useState<QAPair[]>([]);
   const reportRef = useRef<string>('');
 
-  // ── helpers ──────────────────────────────────────────────────────────
-
-  const addActivity = (msg: string) => {
-    setState(prev => ({
-      ...prev,
-      activities: [...prev.activities, `[${timestamp()}] ${msg}`],
-    }));
-  };
-
   // ── startResearch ─────────────────────────────────────────────────────
 
   const startResearch = useCallback(async (topic: string, citationFormat: CitationFormat = 'APA') => {
@@ -89,7 +80,7 @@ export function useResearch() {
     }
   }, []);
 
-  function applyUpdate(update: AgentUpdate, topic: string) {
+  function applyUpdate(update: AgentUpdate, _topic: string) {
     const { step, message, data } = update;
 
     switch (step) {
