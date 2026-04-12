@@ -58,41 +58,21 @@ _synthesizes sources with confidence scoring, and writes citation-rich academic 
 
 ## 🏛️ Architecture
 
-```
-                              ┌─────────────────┐
-                              │   User Query     │
-                              └────────┬────────┘
-                                       │
-                    ┌──────────────────────────────────────┐
-                    │         🤖 ResearchAgent              │
-                    │                                      │
-                    │  ┌──────────┐    ┌──────────────┐    │
-                    │  │  1 PLAN  │───▶│ Sub-Questions │    │
-                    │  └──────────┘    └──────┬───────┘    │
-                    │                         │ ×4-5       │
-                    │              ┌──────────▼─────────┐  │
-                    │              │   2 REWRITE query   │  │
-                    │              └──────────┬─────────┘  │
-                    │              ┌──────────▼─────────┐  │
-                    │              │   3 SEARCH  web    │  │
-                    │              └──────────┬─────────┘  │
-                    │              ┌──────────▼─────────┐  │
-                    │              │  4 SYNTHESIZE facts │  │
-                    │              └──────────┬─────────┘  │
-                    │              ┌──────────▼─────────┐  │
-                    │              │   5 STORE  → RAG   │  │
-                    │              └──────────┬─────────┘  │
-                    │                         │            │
-                    │  ┌──────────────────────▼─────────┐  │
-                    │  │  6 WRITE — Academic Report     │  │
-                    │  └────────────────────────────────┘  │
-                    └──────────────────────────────────────┘
-                            │                    ▲
-                    SSE Stream ▼              │ Follow-up
-               ┌──────────────────┐    ┌─────┴──────┐
-               │  React/TS/Vite   │    │  RAG Q&A   │
-               │  Pipeline UI     │    │  ChromaDB  │
-               └──────────────────┘    └────────────┘
+```mermaid
+flowchart TD
+    A[🔎 User Query] --> B[🤖 ResearchAgent]
+    B --> C[1 PLAN — Claude]
+    C --> D[Sub-Questions ×4-5]
+    D --> E[2 REWRITE query]
+    E --> F[3 SEARCH web]
+    F --> G[4 SYNTHESIZE facts]
+    G --> H[5 STORE → ChromaDB]
+    H --> D
+    H --> I[6 WRITE — Academic Report]
+    I --> J[📡 SSE Stream]
+    I --> K[💬 Follow-up Q&A]
+    J --> L[⚛️ React/TS/Vite UI]
+    K --> M[🧩 RAG — ChromaDB]
 ```
 
 <br/>
