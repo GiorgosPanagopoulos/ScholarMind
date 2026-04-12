@@ -41,6 +41,8 @@ export interface Translations {
   liveWebSearchDesc: string;
   academicReport: string;
   academicReportDesc: string;
+  // Example topics
+  exampleTopics: string[];
   // Misc
   somethingWentWrong: string;
 }
@@ -88,6 +90,12 @@ export const translations: Record<Language, Translations> = {
     academicReport: 'Academic Report',
     academicReportDesc: 'Structured report with APA or IEEE citations and PDF export',
 
+    exampleTopics: [
+      'The impact of large language models on scientific research',
+      'Quantum computing applications in cryptography',
+      'CRISPR gene editing: current capabilities and ethical implications',
+    ],
+
     somethingWentWrong: 'Something went wrong.',
   },
 
@@ -132,6 +140,12 @@ export const translations: Record<Language, Translations> = {
     liveWebSearchDesc: 'Αναζήτηση DuckDuckGo για ενημερωμένες πληροφορίες',
     academicReport: 'Ακαδημαϊκή Αναφορά',
     academicReportDesc: 'Δομημένη αναφορά με παραπομπές APA ή IEEE και εξαγωγή PDF',
+
+    exampleTopics: [
+      'Η επίδραση των μεγάλων γλωσσικών μοντέλων στην επιστημονική έρευνα',
+      'Εφαρμογές κβαντικών υπολογιστών στην κρυπτογραφία',
+      'Επεξεργασία γονιδίων CRISPR: δυνατότητες και ηθικά ζητήματα',
+    ],
 
     somethingWentWrong: 'Κάτι πήγε στραβά.',
   },

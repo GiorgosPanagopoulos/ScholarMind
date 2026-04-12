@@ -9,7 +9,7 @@ import { ActivityFeed } from './components/ActivityFeed';
 import { SubQuestions } from './components/SubQuestions';
 import { ReportPanel } from './components/ReportPanel';
 import { FollowUp } from './components/FollowUp';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Brain } from 'lucide-react';
 
 /* ── Deterministic star positions (no randomness per render) ───────── */
 const STARS = Array.from({ length: 55 }, (_, i) => ({
@@ -69,10 +69,14 @@ export default function App() {
         <div className="orb-3 absolute top-1/2 right-1/4 w-95 h-95 rounded-full bg-cyan-600/8 blur-3xl" />
       </div>
 
+      {/* ── Grid / matrix overlay ── */}
+      <div className="fixed inset-0 bg-grid-overlay pointer-events-none z-0" aria-hidden="true" />
+
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 border-b border-white/8 bg-slate-900/80 backdrop-blur-xl shadow-lg shadow-black/30">
         <div className="max-w-5xl mx-auto px-3 md:px-6 py-3.5 flex items-center justify-between gap-3">
-          <h1 className="text-lg md:text-xl font-bold tracking-tight shrink-0">
+          <h1 className="text-lg md:text-xl font-bold tracking-tight shrink-0 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-indigo-400 logo-pulse shrink-0" />
             Scholar<span className="text-indigo-400">Mind</span>
           </h1>
 
@@ -97,7 +101,10 @@ export default function App() {
 
             {/* Model badge */}
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-600 bg-slate-800/60 border border-white/8 px-3 py-1.5 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="relative flex items-center justify-center w-2.5 h-2.5">
+                <span className="absolute w-2 h-2 rounded-full bg-emerald-400 status-dot-ping" />
+                <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </span>
               <span className="font-mono">claude-sonnet-4-5</span>
             </div>
           </div>
@@ -184,8 +191,10 @@ export default function App() {
             <div className="relative space-y-4">
               <div className="text-5xl md:text-6xl">🎓</div>
               <div className="space-y-3">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-100 min-h-9 md:min-h-11">
-                  {heroTitle || '\u00A0'}
+                <h2 className="text-2xl md:text-3xl font-bold min-h-9 md:min-h-11">
+                  <span className={heroTitle ? 'bg-linear-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent' : 'text-slate-100'}>
+                    {heroTitle || '\u00A0'}
+                  </span>
                   {!typingDone && <span className="typewriter-cursor">|</span>}
                 </h2>
                 <p className="text-slate-400 max-w-md mx-auto leading-relaxed text-sm md:text-base px-4 md:px-0">
@@ -194,17 +203,24 @@ export default function App() {
               </div>
             </div>
 
-            <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto text-left">
+            <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto justify-center text-left">
               {[
-                { icon: '🧠', title: T.smartPlanning,  desc: T.smartPlanningDesc,  from: 'from-indigo-500/10',  border: 'border-indigo-500/25  hover:border-indigo-400/50' },
-                { icon: '🔍', title: T.liveWebSearch,  desc: T.liveWebSearchDesc,  from: 'from-emerald-500/10', border: 'border-emerald-500/25 hover:border-emerald-400/50' },
-                { icon: '📄', title: T.academicReport, desc: T.academicReportDesc, from: 'from-violet-500/10',  border: 'border-violet-500/25  hover:border-violet-400/50' },
+                { icon: '🧠', title: T.smartPlanning,  desc: T.smartPlanningDesc,  from: 'from-indigo-500/10',  border: 'border-indigo-500/25',  hoverGlow: 'hover:shadow-indigo-500/20',  hoverBorder: 'hover:border-indigo-400/60'  },
+                { icon: '🔍', title: T.liveWebSearch,  desc: T.liveWebSearchDesc,  from: 'from-emerald-500/10', border: 'border-emerald-500/25', hoverGlow: 'hover:shadow-emerald-500/20', hoverBorder: 'hover:border-emerald-400/60' },
+                { icon: '📄', title: T.academicReport, desc: T.academicReportDesc, from: 'from-violet-500/10',  border: 'border-violet-500/25',  hoverGlow: 'hover:shadow-violet-500/20',  hoverBorder: 'hover:border-violet-400/60'  },
               ].map((card, i) => (
                 <div
                   key={i}
-                  className={`bg-linear-to-br ${card.from} to-transparent backdrop-blur-xl rounded-2xl p-4 border ${card.border} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-black/30 shadow-md shadow-black/20`}
+                  className={`group relative bg-linear-to-br ${card.from} to-transparent backdrop-blur-xl rounded-2xl p-4 border ${card.border} ${card.hoverBorder} transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${card.hoverGlow} shadow-md shadow-black/20`}
                 >
-                  <div className="text-2xl mb-2">{card.icon}</div>
+                  {/* Number badge */}
+                  <span className="absolute top-2.5 right-3 font-mono text-[10px] text-slate-600/50 font-bold select-none tracking-widest">
+                    0{i + 1}
+                  </span>
+                  {/* Icon — scales on group hover */}
+                  <div className="text-2xl mb-2 transition-transform duration-300 group-hover:scale-110 inline-block">
+                    {card.icon}
+                  </div>
                   <h3 className="text-sm font-semibold text-slate-200 mb-1">{card.title}</h3>
                   <p className="text-xs text-slate-500 leading-relaxed">{card.desc}</p>
                 </div>
@@ -216,7 +232,7 @@ export default function App() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 border-t border-white/6 mt-12 md:mt-16">
-        <div className="max-w-5xl mx-auto px-3 md:px-6 py-4 flex justify-end">
+        <div className="max-w-5xl mx-auto px-3 md:px-6 py-4 flex justify-center">
           <span className="text-xs text-slate-700 font-mono">Built by Georgios Panagopoulos</span>
         </div>
       </footer>

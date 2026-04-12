@@ -11,12 +11,6 @@ interface Props {
   lang: Language;
 }
 
-const EXAMPLE_TOPICS = [
-  'The impact of large language models on scientific research',
-  'Quantum computing applications in cryptography',
-  'CRISPR gene editing: current capabilities and ethical implications',
-];
-
 export function SearchBar({ onSearch, onReset, isLoading, hasResult, lang }: Props) {
   const [value, setValue] = useState('');
   const [citationFormat, setCitationFormat] = useState<CitationFormat>('APA');
@@ -31,16 +25,25 @@ export function SearchBar({ onSearch, onReset, isLoading, hasResult, lang }: Pro
   return (
     <div className="space-y-3">
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2.5">
-        {/* Search input */}
-        <div className="relative flex-1">
-          <input
-            type="text"
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            placeholder={T.searchPlaceholder}
-            disabled={isLoading}
-            className="w-full glass-card bg-slate-800/70 border-white/10 text-white placeholder-slate-500 rounded-xl px-5 py-3.5 text-base focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-55 transition-all duration-200 shadow-inner shadow-black/20"
-          />
+        {/* Search input with rotating gradient border */}
+        <div className="search-gradient-border">
+          <div className="search-gradient-inner relative">
+            <input
+              type="text"
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              placeholder=""
+              disabled={isLoading}
+              className="w-full bg-slate-800/90 text-white rounded-[calc(0.75rem-1.5px)] px-5 py-3.5 text-base focus:outline-none disabled:opacity-55 transition-all duration-200 shadow-inner shadow-black/20"
+            />
+            {/* Terminal-style placeholder with blinking cursor */}
+            {!value && (
+              <div className="absolute inset-0 pointer-events-none flex items-center px-5 gap-0">
+                <span className="text-slate-500 text-base">{T.searchPlaceholder}</span>
+                {!isLoading && <span className="typewriter-cursor ml-0.5">|</span>}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-2.5">
@@ -107,11 +110,11 @@ export function SearchBar({ onSearch, onReset, isLoading, hasResult, lang }: Pro
         </div>
       </form>
 
-      {/* Example topics */}
+      {/* Example topics — language-aware */}
       {!isLoading && !hasResult && (
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-xs text-slate-600 font-medium">{T.tryLabel}</span>
-          {EXAMPLE_TOPICS.map((topic, idx) => (
+          {T.exampleTopics.map((topic, idx) => (
             <button
               key={idx}
               onClick={() => setValue(topic)}

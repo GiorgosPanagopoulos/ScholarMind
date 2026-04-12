@@ -128,6 +128,68 @@ body {
   animation: blink 0.85s step-end infinite;
 }
 
+/* ─── Rotating conic-gradient border (search input) ────────────────── */
+@keyframes borderSpin {
+  to { transform: rotate(1turn); }
+}
+.search-gradient-border {
+  position: relative;
+  border-radius: 0.75rem;
+  padding: 1.5px;
+  overflow: hidden;
+  flex: 1;
+}
+.search-gradient-border::before {
+  content: '';
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  top: -100%;
+  left: -100%;
+  background: conic-gradient(
+    from 0deg,
+    #6366f1 0deg,
+    #a855f7 90deg,
+    #06b6d4 200deg,
+    #6366f1 360deg
+  );
+  animation: borderSpin 5s linear infinite;
+  transform-origin: center;
+  z-index: 0;
+  opacity: 0.35;
+}
+.search-gradient-border:focus-within::before {
+  opacity: 0.7;
+}
+.search-gradient-inner {
+  position: relative;
+  z-index: 1;
+  border-radius: calc(0.75rem - 1.5px);
+  overflow: hidden;
+}
+
+/* ─── Animated logo pulse ──────────────────────────────────────────── */
+@keyframes logoPulse {
+  0%, 100% { opacity: 0.75; transform: scale(1);    filter: drop-shadow(0 0 0px rgba(99,102,241,0)); }
+  50%       { opacity: 1;    transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(99,102,241,0.75)); }
+}
+.logo-pulse { animation: logoPulse 3s ease-in-out infinite; }
+
+/* ─── Status dot sonar ping ────────────────────────────────────────── */
+@keyframes sonarPing {
+  0%   { transform: scale(1);   opacity: 0.65; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.status-dot-ping { animation: sonarPing 1.8s ease-out infinite; }
+
+/* ─── Grid / matrix overlay ────────────────────────────────────────── */
+.bg-grid-overlay {
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
 /* ─── Collapsible (grid-rows trick) ────────────────────────────────── */
 .collapsible-wrap {
   display: grid;
