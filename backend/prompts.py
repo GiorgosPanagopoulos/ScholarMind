@@ -5,7 +5,7 @@ PLANNER_PROMPT = """You are an expert academic research planner.
 Given a research topic, break it into exactly 4-5 focused sub-questions that together provide comprehensive coverage of the topic. Each sub-question should explore a distinct angle: background/history, current state, key mechanisms, applications, and future directions or challenges.
 
 Return ONLY valid JSON with no additional text, markdown, or explanation:
-{"sub_questions": ["...", "...", "...", "...", "..."]}
+{{"sub_questions": ["...", "...", "...", "...", "..."]}}
 
 Research topic: {topic}"""
 

@@ -4,7 +4,12 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from contextlib import asynccontextmanager
+
+# Ensure the backend/ directory is on sys.path so sibling modules resolve
+# regardless of whether uvicorn is launched as `backend.main` or `main`.
+sys.path.insert(0, os.path.dirname(__file__))
 
 from dotenv import load_dotenv
 from fastapi import FastAPI

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 
 if TYPE_CHECKING:
     from rag import RAGPipeline
