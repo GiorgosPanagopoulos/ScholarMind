@@ -1,280 +1,276 @@
-# ScholarMind
+<div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green?logo=fastapi)
-![React](https://img.shields.io/badge/React-19-61dafb?logo=react)
-![Anthropic](https://img.shields.io/badge/Anthropic-Claude%20Sonnet%204.5-orange?logo=anthropic)
-![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-purple)
+<br/>
 
-**ScholarMind** is a Multi-Step Academic Research Agent that takes any research topic and autonomously produces a structured academic report with citations. It was built as the final capstone project for the AUEB *AI for Developers* programme.
+<img src="https://img.icons8.com/fluency/96/brain.png" width="80" alt="ScholarMind"/>
 
-ScholarMind demonstrates the complete modern AI engineering stack: Prompt Engineering, Retrieval-Augmented Generation (RAG), AI Agents with Tool Use, and a real-time streaming API built with FastAPI — all wired to a polished React + TypeScript frontend.
+# `ScholarMind`
 
-When you submit a research topic, ScholarMind's agent pipeline springs into action: it uses Claude to decompose the topic into 4-5 focused sub-questions, rewrites each into an optimised web search query, fetches live results from DuckDuckGo, synthesises the findings with confidence scoring, stores everything in a local ChromaDB vector store, and finally writes a full academic report in Markdown with an APA reference list. The entire process streams live to the UI so you can watch every step unfold in real time.
+### ⚡ _Multi-Step Academic Research Agent_
 
-After the report is ready, you can ask follow-up questions. ScholarMind retrieves the most relevant stored findings via semantic similarity search and answers using the full context of the report — functioning as a persistent, topic-aware research assistant. Reports can be exported as professionally formatted PDFs.
+<br/>
+
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
+[![Claude](https://img.shields.io/badge/Claude_Sonnet_4.5-D4A574?style=for-the-badge&logo=anthropic&logoColor=white)](https://anthropic.com)
+[![LangChain](https://img.shields.io/badge/LangChain-ReAct-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://langchain.com)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_DB-FF6F61?style=for-the-badge)](https://trychroma.com)
+
+<br/>
+
+**Drop a topic. Watch the agent think. Get a publication-ready report.**
+
+_ScholarMind autonomously decomposes research questions, searches the web,_
+_synthesizes sources with confidence scoring, and writes citation-rich academic reports._
+
+<br/>
+
+[⚡ Quick Start](#-quick-start) •
+[🏛️ Architecture](#%EF%B8%8F-architecture) •
+[✨ Features](#-features) •
+[🧬 Tech Stack](#-tech-stack) •
+[📡 API](#-api-reference) •
+[🗂️ Structure](#%EF%B8%8F-project-structure)
 
 ---
 
-## Architecture
+</div>
 
-```text
-┌─────────────────────────────────────────────────────────────────────┐
-│                        ScholarMind Pipeline                         │
-│                                                                     │
-│   User Input (topic)                                                │
-│        │                                                            │
-│        ▼                                                            │
-│   ┌─────────────────┐                                               │
-│   │  PLAN (Claude)  │  ← PLANNER_PROMPT → 4-5 sub-questions        │
-│   └────────┬────────┘                                               │
-│            │  for each sub-question:                                │
-│            ▼                                                        │
-│   ┌──────────────────────┐                                          │
-│   │ REWRITE (Claude)     │  ← QUERY_REWRITER_PROMPT → search query │
-│   └──────────┬───────────┘                                          │
-│              │                                                      │
-│              ▼                                                      │
-│   ┌──────────────────────┐                                          │
-│   │ SEARCH (DuckDuckGo)  │  ← duckduckgo-search → top 5 results    │
-│   └──────────┬───────────┘                                          │
-│              │                                                      │
-│              ▼                                                      │
-│   ┌──────────────────────┐                                          │
-│   │ SYNTHESIZE (Claude)  │  ← SEARCH_SYNTHESIZER_PROMPT            │
-│   │  facts + sources     │    → {facts, sources, confidence}        │
-│   └──────────┬───────────┘                                          │
-│              │                                                      │
-│              ▼                                                      │
-│   ┌──────────────────────┐                                          │
-│   │  STORE (ChromaDB)    │  ← sentence-transformers embeddings      │
-│   │  all-MiniLM-L6-v2    │    → PersistentClient vector store       │
-│   └──────────────────────┘                                          │
-│            │  (after all sub-questions)                             │
-│            ▼                                                        │
-│   ┌──────────────────────┐                                          │
-│   │ RETRIEVE (ChromaDB)  │  ← top-10 semantic search               │
-│   └──────────┬───────────┘                                          │
-│              │                                                      │
-│              ▼                                                      │
-│   ┌──────────────────────┐                                          │
-│   │  WRITE (Claude)      │  ← REPORT_WRITER_PROMPT → Markdown       │
-│   │  Academic Report     │    report with APA references            │
-│   └──────────────────────┘                                          │
-│                                                                     │
-│   Follow-up Q&A                                                     │
-│   question → RAG retrieve → FOLLOWUP_PROMPT → Claude stream        │
-│                                                                     │
-│   PDF Export → ReportLab → professional multi-page PDF             │
-└─────────────────────────────────────────────────────────────────────┘
+<br/>
 
-┌──────────────┐   SSE stream   ┌──────────────────┐
-│   React +    │ ◄──────────── │    FastAPI +      │
-│  TypeScript  │   /api/...    │  ResearchAgent    │
-│    (Vite)    │ ─────────────► │  (Python async)   │
-└──────────────┘               └──────────────────┘
+## ✨ Features
+
+```
+ 🔬  Multi-Step Pipeline    →  Autonomous sub-question decomposition & parallel research
+ 🌐  Live Web Search        →  DuckDuckGo integration, real-time source retrieval
+ 🧩  RAG Synthesis          →  ChromaDB + sentence-transformers semantic embeddings
+ 📊  Confidence Scoring     →  Every fact scored 0.0–1.0 for reliability
+ 📝  Citation Tracking      →  Full attribution with APA & IEEE formatting
+ 📡  SSE Streaming          →  Watch every step live: plan → search → synthesize → write
+ 📑  PDF Export             →  One-click ReportLab PDF with title page, TOC & references
+ 💬  Follow-Up Q&A          →  Context-grounded answers from stored research
+ 🎯  ReAct Agent            →  LangChain tool-use agent for dynamic decision-making
 ```
 
----
+<br/>
 
-## Tech Stack
+## 🏛️ Architecture
 
-| Layer        | Technology                               | Purpose                             |
-|--------------|------------------------------------------|-------------------------------------|
-| **Backend**  | Python 3.11+, FastAPI, uvicorn           | API server, async streaming         |
-| **LLM**      | Anthropic Claude Sonnet 4.5 (direct SDK) | Planning, synthesis, report writing |
-| **RAG**      | sentence-transformers (all-MiniLM-L6-v2) | Local semantic embeddings           |
-| **VectorDB** | ChromaDB (PersistentClient)              | Finding storage & retrieval         |
-| **Search**   | duckduckgo-search (DDGS)                 | Free, no-key web search             |
-| **PDF**      | ReportLab                                | Professional PDF export             |
-| **Frontend** | React 19, TypeScript, Vite               | Real-time streaming UI              |
-| **Styling**  | Tailwind CSS v4 (@tailwindcss/vite)      | Dark-theme UI                       |
+```
+                              ┌─────────────────┐
+                              │   User Query     │
+                              └────────┬────────┘
+                                       │
+                    ┌──────────────────────────────────────┐
+                    │         🤖 ResearchAgent              │
+                    │                                      │
+                    │  ┌──────────┐    ┌──────────────┐    │
+                    │  │  1 PLAN  │───▶│ Sub-Questions │    │
+                    │  └──────────┘    └──────┬───────┘    │
+                    │                         │ ×4-5       │
+                    │              ┌──────────▼─────────┐  │
+                    │              │   2 REWRITE query   │  │
+                    │              └──────────┬─────────┘  │
+                    │              ┌──────────▼─────────┐  │
+                    │              │   3 SEARCH  web    │  │
+                    │              └──────────┬─────────┘  │
+                    │              ┌──────────▼─────────┐  │
+                    │              │  4 SYNTHESIZE facts │  │
+                    │              └──────────┬─────────┘  │
+                    │              ┌──────────▼─────────┐  │
+                    │              │   5 STORE  → RAG   │  │
+                    │              └──────────┬─────────┘  │
+                    │                         │            │
+                    │  ┌──────────────────────▼─────────┐  │
+                    │  │  6 WRITE — Academic Report     │  │
+                    │  └────────────────────────────────┘  │
+                    └──────────────────────────────────────┘
+                            │                    ▲
+                    SSE Stream ▼              │ Follow-up
+               ┌──────────────────┐    ┌─────┴──────┐
+               │  React/TS/Vite   │    │  RAG Q&A   │
+               │  Pipeline UI     │    │  ChromaDB  │
+               └──────────────────┘    └────────────┘
+```
 
----
+<br/>
 
-## Prerequisites
+## 🧬 Tech Stack
 
-- Python 3.11 or newer
-- Node.js 18 or newer
-- An [Anthropic API key](https://console.anthropic.com/)
+| Layer | Tech | Role |
+|:---:|:---|:---|
+| 🖥️ | **FastAPI** + Python 3.11 | Async API server, SSE streaming |
+| 🧠 | **Claude Sonnet 4.5** (Anthropic SDK) | Planning, synthesis, report writing |
+| 🔗 | **LangChain** ReAct Agent | Tool orchestration & decision-making |
+| 📐 | **sentence-transformers** (MiniLM-L6-v2) | Local semantic embeddings |
+| 💾 | **ChromaDB** PersistentClient | Vector storage & similarity search |
+| 🔍 | **DDGS** (DuckDuckGo Search) | Free, no-key web search |
+| 📄 | **ReportLab** | Professional PDF generation |
+| ⚛️ | **React 19** + TypeScript + Vite | Real-time streaming frontend |
+| 🎨 | **Tailwind CSS v4** | Dark-theme UI styling |
 
----
+<br/>
 
-## Setup
+## ⚡ Quick Start
 
-### 1. Clone the repo
+> **Prerequisites:** Python 3.11+ · Node.js 18+ · [Anthropic API Key](https://console.anthropic.com)
 
 ```bash
-git clone <repo-url>
-cd scholarmind
+# 1 — Clone & configure
+git clone https://github.com/GiorgosPanagopoulos/ScholarMind.git
+cd ScholarMind
+cp .env.example .env
+# → set ANTHROPIC_API_KEY in .env
+
+# 2 — Backend
+pip install -r requirements.txt
+uvicorn backend.main:app --reload --port 8000
+
+# 3 — Frontend (new terminal)
+cd frontend && npm install && npm run dev
 ```
 
-### 2. Configure environment
+> 🟢 Backend → `http://localhost:8000` · Frontend → `http://localhost:5173`
 
-```bash
-cp .env.example backend/.env
-# Edit backend/.env and set ANTHROPIC_API_KEY=sk-ant-...
+<br/>
+
+## 🔄 Usage
+
+```
+1.  Enter a research topic          →  "Impact of LLMs on scientific research"
+2.  Watch the pipeline animate      →  Plan → Search → Synthesize → Write
+3.  Track the activity feed         →  Real-time agent decision log
+4.  Read the structured report      →  Markdown with inline citations
+5.  Ask follow-up questions         →  RAG-powered contextual answers
+6.  Export PDF                      →  Professional academic format
 ```
 
-### 3. Start the backend
+### 💡 Example Topics
 
-```bash
-cd backend
-pip install -r ../requirements.txt
-uvicorn main:app --reload --port 8000
-```
+| Topic | ScholarMind Explores |
+|:---|:---|
+| _Large language models in scientific research_ | NLP history → LLM capabilities → research acceleration → peer review → future |
+| _Quantum computing & cryptography_ | Quantum gates → Shor's algorithm → post-quantum standards → hardware timeline |
+| _CRISPR gene editing ethics_ | Cas9 mechanism → clinical trials → germline debates → regulation → precision medicine |
 
-The API will be available at `http://localhost:8000`.
+<br/>
 
-### 4. Start the frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open `http://localhost:5173` in your browser.
-
----
-
-## Usage
-
-1. **Enter a research topic** in the search bar and press *Research*
-2. **Watch the pipeline** — Plan → Search → Synthesize → Write nodes light up in real time
-3. **Follow the activity log** to see exactly what the agent is doing
-4. **Read the sub-questions** as they are generated and tracked
-5. **Receive the full report** rendered in Markdown with citations
-6. **Ask follow-up questions** — ScholarMind uses RAG to answer from stored findings
-7. **Export PDF** — download a professionally formatted report
-
-### Example Research Topics
-
-| Topic                                                                | What ScholarMind explores                                                                                            |
-|----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| *The impact of large language models on scientific research*         | History of NLP, current LLM capabilities, research acceleration, peer review implications, future directions         |
-| *Quantum computing applications in cryptography*                     | Quantum gates, Shor's algorithm, post-quantum standards, current hardware, timeline to threat                        |
-| *CRISPR gene editing: current capabilities and ethical implications* | CRISPR-Cas9 mechanism, clinical trials, germline editing debates, regulatory landscape, future of precision medicine |
-
----
-
-## API Reference
+## 📡 API Reference
 
 ### `GET /api/health`
-
-Returns server status.
-
-**Response:** `{"status": "ok", "model": "claude-sonnet-4-5"}`
-
----
+```json
+{ "status": "ok", "model": "claude-sonnet-4-5" }
+```
 
 ### `POST /api/research`
-
-Starts a research session. Returns an SSE stream.
-
-**Request body:**
+Start a research session → returns **SSE stream**
 
 ```json
+// Request
 { "topic": "string" }
 ```
 
-**SSE events** (`data: <json>\n\n`):
-
-| `step`         | `data`                             | Description                  |
-|----------------|------------------------------------|------------------------------|
-| `planning`     | `string[]` sub-questions           | Research plan ready          |
-| `searching`    | `null`                             | Searching for a sub-question |
-| `synthesizing` | `{facts, confidence}`              | Synthesis complete           |
-| `writing`      | `null`                             | Writing report               |
-| `complete`     | `{report, sources, sub_questions}` | All done                     |
-| `error`        | `null`                             | Something went wrong         |
-
----
+| Event `step` | `data` | Description |
+|:---|:---|:---|
+| `planning` | `string[]` | Sub-questions generated |
+| `searching` | `null` | Web search in progress |
+| `synthesizing` | `{facts, confidence}` | Facts extracted & scored |
+| `writing` | `null` | Report generation |
+| `complete` | `{report, sources, sub_questions}` | Done |
 
 ### `POST /api/followup`
-
-Answers a follow-up question with RAG context. Returns an SSE stream.
-
-**Request body:**
+RAG-powered follow-up → returns **SSE stream**
 
 ```json
-{
-  "question": "string",
-  "topic": "string",
-  "report_summary": "string"
-}
+{ "question": "string", "topic": "string", "report_summary": "string" }
 ```
-
-**SSE events:**
-
-```json
-{"step": "followup", "message": "<text chunk>", "done": false}
-{"step": "followup", "message": "", "done": true}
-```
-
----
 
 ### `POST /api/export-pdf`
-
-Generates a PDF and returns it as a binary download.
-
-**Request body:**
+Returns `application/pdf` binary
 
 ```json
-{
-  "report_text": "string",
-  "topic": "string",
-  "sources": [{"title": "...", "url": "...", "snippet": "..."}]
-}
+{ "report_text": "string", "topic": "string", "sources": [...] }
 ```
 
-**Response:** `application/pdf` binary stream.
+<br/>
 
----
+## 🗂️ Project Structure
 
-## Project Structure
-
-```text
+```
 scholarmind/
 ├── backend/
-│   ├── main.py              # FastAPI app, CORS, all 4 endpoints
-│   ├── agent.py             # ResearchAgent: full pipeline + follow-up streaming
-│   ├── tools.py             # web_search, store_finding, retrieve_context
-│   ├── rag.py               # RAGPipeline: embed, add_finding, retrieve, clear
-│   ├── report_generator.py  # ReportGenerator: PDF (ReportLab) + format_for_display
-│   └── prompts.py           # All 5 Claude prompt templates
+│   ├── main.py               # FastAPI endpoints + CORS + SSE
+│   ├── agent.py              # ResearchAgent — 6-step pipeline
+│   ├── tools.py              # web_search · store_finding · retrieve_context
+│   ├── rag.py                # RAGPipeline — embed, store, retrieve, clear
+│   ├── report_generator.py   # PDF export + Markdown formatter
+│   └── prompts.py            # 5 structured Claude prompt templates
 ├── frontend/
-│   ├── src/
-│   │   ├── App.tsx                    # Root layout, dark theme
-│   │   ├── components/
-│   │   │   ├── SearchBar.tsx          # Topic input + example suggestions
-│   │   │   ├── PipelineView.tsx       # 4-node animated pipeline
-│   │   │   ├── ActivityFeed.tsx       # Auto-scrolling log
-│   │   │   ├── SubQuestions.tsx       # Numbered list with fade-in
-│   │   │   ├── ReportPanel.tsx        # Markdown report + sources + PDF export
-│   │   │   └── FollowUp.tsx           # Streaming Q&A chat
-│   │   ├── hooks/
-│   │   │   └── useResearch.ts         # All SSE logic, state machine, exportPdf
-│   │   └── types/
-│   │       └── index.ts               # AgentUpdate, Source, ResearchState, QAPair
-├── data/
-│   └── chroma_db/           # ChromaDB persistent vector store
+│   └── src/
+│       ├── App.tsx            # Root layout, dark theme
+│       ├── components/
+│       │   ├── SearchBar.tsx       # Topic input + suggestions
+│       │   ├── PipelineView.tsx    # 4-node animated pipeline
+│       │   ├── ActivityFeed.tsx    # Auto-scrolling log
+│       │   ├── SubQuestions.tsx    # Numbered list + fade-in
+│       │   ├── ReportPanel.tsx     # Markdown + sources + PDF
+│       │   └── FollowUp.tsx        # Streaming Q&A
+│       ├── hooks/
+│       │   └── useResearch.ts      # SSE logic + state machine
+│       └── types/
+│           └── index.ts            # AgentUpdate · Source · ResearchState
+├── data/chroma_db/            # ChromaDB persistent store
 ├── requirements.txt
 ├── .env.example
 └── README.md
 ```
 
+<br/>
+
+## 🎓 AUEB Curriculum Mapping
+
+> Final capstone project — **AUEB _AI for Developers_ Programme** (ΚΕΔΙΒΙΜ/ΟΠΑ, 2026)
+
+| Module | Concept | Implementation |
+|:---:|:---|:---|
+| `02` | Prompt Engineering | 5 structured prompts in `prompts.py` |
+| `03` | RAG | sentence-transformers + ChromaDB pipeline |
+| `04` | AI Agents & Tool Use | ReAct agent with 3 custom tools |
+| `05` | LLM API & Deployment | FastAPI + Anthropic SDK + SSE streaming |
+
+<br/>
+
+## 📄 License
+
+MIT
+
+<br/>
+
 ---
 
-## AUEB AI for Developers Curriculum Mapping
+<div align="center">
 
-| Module       | Concept                              | Where in ScholarMind                                                                                                         |
-|--------------|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| **Module 2** | Prompt Engineering                   | `backend/prompts.py` — 5 structured prompts: PLANNER, QUERY_REWRITER, SEARCH_SYNTHESIZER, REPORT_WRITER, FOLLOWUP            |
-| **Module 3** | RAG (Retrieval-Augmented Generation) | `backend/rag.py` — sentence-transformers embeddings + ChromaDB PersistentClient; used in follow-up and report building       |
-| **Module 4** | AI Agents with Tool Use              | `backend/agent.py` — ResearchAgent orchestrates 6-step pipeline with `web_search`, `store_finding`, `retrieve_context` tools |
-| **Module 5** | LLM API Integration & Deployment     | `backend/main.py` — FastAPI with SSE streaming, `agent.py` uses `anthropic.Anthropic()` SDK directly with streaming support  |
+<br/>
 
----
+```
+ ╔══════════════════════════════════════════════════════════╗
+ ║                                                          ║
+ ║   ┌─ Built with ♠ by ─────────────────────────────────┐  ║
+ ║   │                                                    │  ║
+ ║   │  Georgios Panagopoulos                             │  ║
+ ║   │  AI Engineer · Full-Stack Dev     │  ║
+ ║   │                                                    │  ║
+ ║   │  gh  → github.com/GiorgosPanagopoulos             │  ║
+ ║   │  in  → linkedin.com/in/georgios-panagopoulos-     │  ║
+ ║   │                9253842ba                           │  ║
+ ║   │                                                    │  ║
+ ║   └────────────────────────────────────────────────────┘  ║
+ ║                                                          ║
+ ╚══════════════════════════════════════════════════════════╝
+```
 
-ScholarMind — AUEB AI for Developers Final Project
+<sub>⚡ Powered by mass amounts of caffeine, mass amounts of curiosity</sub>
+
+</div>
