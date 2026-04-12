@@ -8,6 +8,24 @@ interface Props {
   onAsk: (question: string, reportSummary: string) => Promise<void>;
 }
 
+function SendIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+    </svg>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-1.5 px-4 py-2.5 bg-gray-700/60 rounded-2xl rounded-tl-sm w-fit">
+      <span className="typing-dot" />
+      <span className="typing-dot" />
+      <span className="typing-dot" />
+    </div>
+  );
+}
+
 export function FollowUp({ qaHistory, report, onAsk }: Props) {
   const [input, setInput] = useState('');
   const [isAsking, setIsAsking] = useState(false);
@@ -17,55 +35,59 @@ export function FollowUp({ qaHistory, report, onAsk }: Props) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [qaHistory]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault();
     const question = input.trim();
     if (!question || isAsking) return;
 
     setInput('');
     setIsAsking(true);
-
-    // Use first 500 chars of report as summary
-    const reportSummary = report.slice(0, 500);
-    await onAsk(question, reportSummary);
+    await onAsk(question, report.slice(0, 500));
     setIsAsking(false);
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700">
+    <div className="bg-gray-800/90 rounded-2xl border border-gray-700/80 shadow-xl shadow-black/20 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-700">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-          <span>💬</span> Follow-Up Questions
+      <div className="px-6 py-4 border-b border-gray-700/80">
+        <h2 className="text-base font-semibold text-white flex items-center gap-2">
+          <span className="w-7 h-7 rounded-lg bg-indigo-900/60 border border-indigo-700/40 flex items-center justify-center text-sm">
+            💬
+          </span>
+          Follow-Up Questions
         </h2>
-        <p className="text-sm text-gray-400 mt-1">
-          Ask anything about the research findings
-        </p>
+        <p className="text-xs text-gray-500 mt-1.5 ml-9">Ask anything about the research findings</p>
       </div>
 
       {/* Q&A history */}
       {qaHistory.length > 0 && (
-        <div className="px-6 py-4 space-y-6 max-h-96 overflow-y-auto">
+        <div className="px-5 py-5 space-y-5 max-h-120 overflow-y-auto">
           {qaHistory.map((pair, idx) => (
-            <div key={idx} className="space-y-3">
-              {/* Question */}
-              <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-indigo-700 flex items-center justify-center text-xs text-white font-bold">
+            <div key={idx} className="space-y-3 slide-up">
+              {/* Question bubble */}
+              <div className="flex items-start gap-3 justify-end">
+                <div className="max-w-[85%] bg-indigo-600/80 border border-indigo-500/40 text-white text-sm px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-md">
+                  {pair.question}
+                </div>
+                <span className="shrink-0 w-7 h-7 rounded-full bg-indigo-700 border border-indigo-500/40 flex items-center justify-center text-xs text-white font-bold shadow-sm mt-0.5">
                   Q
                 </span>
-                <p className="text-gray-100 text-sm font-medium pt-0.5">{pair.question}</p>
               </div>
 
-              {/* Answer */}
+              {/* Answer bubble */}
               <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center text-xs text-white font-bold">
+                <span className="shrink-0 w-7 h-7 rounded-full bg-emerald-800/80 border border-emerald-600/40 flex items-center justify-center text-xs text-emerald-200 font-bold shadow-sm mt-0.5">
                   A
                 </span>
-                <div className="text-gray-300 text-sm markdown-content flex-1 min-w-0">
+                <div className="max-w-[85%] bg-gray-700/60 border border-gray-600/40 rounded-2xl rounded-tl-sm shadow-md overflow-hidden">
                   {pair.answer ? (
-                    <ReactMarkdown>{pair.answer}</ReactMarkdown>
+                    <div className="text-gray-200 text-sm markdown-content px-4 py-2.5">
+                      <ReactMarkdown>{pair.answer}</ReactMarkdown>
+                    </div>
                   ) : (
-                    <span className="text-indigo-400 animate-pulse">Thinking…</span>
+                    <div className="px-3 py-2.5">
+                      <TypingIndicator />
+                    </div>
                   )}
                 </div>
               </div>
@@ -75,23 +97,28 @@ export function FollowUp({ qaHistory, report, onAsk }: Props) {
         </div>
       )}
 
-      {/* Input form */}
-      <div className="px-6 py-4 border-t border-gray-700">
-        <form onSubmit={handleSubmit} className="flex gap-3">
+      {/* Input */}
+      <div className={`px-5 py-4 ${qaHistory.length > 0 ? 'border-t border-gray-700/80' : ''}`}>
+        <form onSubmit={handleSubmit} className="flex gap-2.5">
           <input
             type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
-            placeholder="Ask a follow-up question about the research…"
+            placeholder="Ask a follow-up question…"
             disabled={isAsking}
-            className="flex-1 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-60"
+            className="flex-1 bg-gray-700/60 border border-gray-600/80 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-55 transition-all duration-200"
           />
           <button
             type="submit"
             disabled={!input.trim() || isAsking}
-            className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-5 py-2.5 rounded-lg text-sm transition-colors flex-shrink-0"
+            className="shrink-0 flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all duration-200 shadow-md shadow-indigo-900/30 active:scale-[0.97]"
           >
-            {isAsking ? 'Asking…' : 'Ask'}
+            {isAsking ? (
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <SendIcon />
+            )}
+            <span>{isAsking ? 'Asking…' : 'Ask'}</span>
           </button>
         </form>
       </div>

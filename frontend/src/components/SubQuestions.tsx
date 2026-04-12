@@ -3,16 +3,24 @@ interface Props {
   currentStep: number;
 }
 
+function CheckIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+    </svg>
+  );
+}
+
 export function SubQuestions({ subQuestions, currentStep }: Props) {
   if (subQuestions.length === 0) return null;
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
-      <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+    <div className="bg-gray-800/90 rounded-2xl border border-gray-700/80 p-5 shadow-xl shadow-black/20">
+      <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
         Research Sub-Questions
       </h2>
 
-      <ol className="space-y-3">
+      <ol className="space-y-2.5">
         {subQuestions.map((q, idx) => {
           const stepNum = idx + 1;
           const isComplete = stepNum < currentStep;
@@ -22,31 +30,29 @@ export function SubQuestions({ subQuestions, currentStep }: Props) {
             <li
               key={idx}
               className="fade-in-up flex items-start gap-3"
-              style={{ animationDelay: `${idx * 80}ms` }}
+              style={{ animationDelay: `${idx * 60}ms` }}
             >
-              {/* Status indicator */}
+              {/* Status badge */}
               <span
                 className={[
-                  'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mt-0.5',
+                  'shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mt-0.5 transition-all duration-300',
                   isComplete
-                    ? 'bg-green-700 text-green-200'
+                    ? 'bg-emerald-800/80 border border-emerald-600/40 text-emerald-300'
                     : isActive
-                    ? 'bg-indigo-600 text-indigo-200 pulse-active'
-                    : 'bg-gray-700 text-gray-400',
+                    ? 'bg-indigo-600 border border-indigo-400/60 text-white pulse-active'
+                    : 'bg-gray-700/80 border border-gray-600/60 text-gray-500',
                 ].join(' ')}
               >
-                {isComplete ? '✓' : stepNum}
+                {isComplete ? <CheckIcon /> : stepNum}
               </span>
 
               {/* Question text */}
               <span
                 className={[
-                  'text-sm leading-relaxed',
-                  isComplete
-                    ? 'text-green-400'
-                    : isActive
-                    ? 'text-indigo-200 font-medium'
-                    : 'text-gray-300',
+                  'text-sm leading-relaxed transition-colors duration-300',
+                  isComplete ? 'text-emerald-400/80'
+                  : isActive  ? 'text-indigo-200 font-medium'
+                  : 'text-gray-400',
                 ].join(' ')}
               >
                 {q}
