@@ -263,12 +263,14 @@ export function useResearch() {
       const a = document.createElement('a');
       a.href = url;
       a.download = `scholarmind_${state.topic.slice(0, 30).replace(/\s+/g, '_')}.pdf`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
     } catch (err) {
       console.error('PDF export error:', err);
     }
-  }, [state.report, state.topic, state.sources]);
+  }, [state.report, state.topic, state.sources, state.citationFormat]);
 
   // ── reset ──────────────────────────────────────────────────────────────
 
