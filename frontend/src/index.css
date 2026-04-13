@@ -5,8 +5,18 @@
 body {
   background-color: #0f172a; /* slate-900 */
   color: #f8fafc;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Display / Serif font ─────────────────────────────────────────── */
+.font-display {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+/* ─── Monospace ────────────────────────────────────────────────────── */
+.font-mono, code, pre, kbd, [class*="font-mono"] {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
 #root { min-height: 100vh; }
@@ -174,6 +184,13 @@ body {
   50%       { opacity: 1;    transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(99,102,241,0.75)); }
 }
 .logo-pulse { animation: logoPulse 3s ease-in-out infinite; }
+
+.hero-title-gradient {
+  background-image: linear-gradient(90deg, #818cf8, #a855f7, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 /* ─── Status dot sonar ping ────────────────────────────────────────── */
 @keyframes sonarPing {

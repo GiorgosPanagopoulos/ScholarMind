@@ -43,6 +43,20 @@ export interface Translations {
   academicReportDesc: string;
   // Example topics
   exampleTopics: string[];
+  // Citation style UI
+  citationStyle: string;
+  apaHint: string;
+  ieeeHint: string;
+  // Rotating taglines
+  taglines: [string, string, string];
+  // How it works
+  howItWorks: [string, string, string, string];
+  // Stats
+  statsSubQ: string;
+  statsSources: string;
+  statsReport: string;
+  // Keyboard hint
+  pressEnter: string;
   // Misc
   somethingWentWrong: string;
 }
@@ -84,7 +98,7 @@ export const translations: Record<Language, Translations> = {
     heroDesc:
       'ScholarMind autonomously breaks your topic into sub-questions, searches the web, synthesizes sources, and delivers a structured academic report — complete with citations.',
     smartPlanning: 'Smart Planning',
-    smartPlanningDesc: 'Claude breaks your topic into focused sub-questions',
+    smartPlanningDesc: 'AI breaks your topic into focused sub-questions',
     liveWebSearch: 'Live Web Search',
     liveWebSearchDesc: 'DuckDuckGo search for up-to-date information',
     academicReport: 'Academic Report',
@@ -95,6 +109,21 @@ export const translations: Record<Language, Translations> = {
       'Quantum computing applications in cryptography',
       'CRISPR gene editing: current capabilities and ethical implications',
     ],
+
+    citationStyle: 'Citation Style',
+    apaHint: '(Author, Year)',
+    ieeeHint: '[1], [2]',
+
+    taglines: [
+      'From question to report in seconds',
+      'AI-powered academic research',
+      'Cite with confidence',
+    ],
+    howItWorks: ['Ask', 'Research', 'Synthesize', 'Report'],
+    statsSubQ: 'Sub-Questions Generated',
+    statsSources: 'Sources Analyzed',
+    statsReport: 'Comprehensive Report',
+    pressEnter: 'Press Enter to start',
 
     somethingWentWrong: 'Something went wrong.',
   },
@@ -135,7 +164,7 @@ export const translations: Record<Language, Translations> = {
     heroDesc:
       'Το ScholarMind αναλύει αυτόματα το θέμα σας σε υπο-ερωτήματα, αναζητά στο διαδίκτυο, συνθέτει πηγές και παράγει μια δομημένη ακαδημαϊκή αναφορά — με πλήρεις παραπομπές.',
     smartPlanning: 'Έξυπνος Σχεδιασμός',
-    smartPlanningDesc: 'Το Claude αναλύει το θέμα σας σε εστιασμένα υπο-ερωτήματα',
+    smartPlanningDesc: 'Η ΤΝ αναλύει το θέμα σας σε εστιασμένα υπο-ερωτήματα',
     liveWebSearch: 'Ζωντανή Αναζήτηση',
     liveWebSearchDesc: 'Αναζήτηση DuckDuckGo για ενημερωμένες πληροφορίες',
     academicReport: 'Ακαδημαϊκή Αναφορά',
@@ -146,6 +175,21 @@ export const translations: Record<Language, Translations> = {
       'Εφαρμογές κβαντικών υπολογιστών στην κρυπτογραφία',
       'Επεξεργασία γονιδίων CRISPR: δυνατότητες και ηθικά ζητήματα',
     ],
+
+    citationStyle: 'Στυλ Αναφορών',
+    apaHint: '(Συγγραφέας, Έτος)',
+    ieeeHint: '[1], [2]',
+
+    taglines: [
+      'Από ερώτημα σε αναφορά σε δευτερόλεπτα',
+      'Ακαδημαϊκή έρευνα με ΤΝ',
+      'Παραπομπές με αξιοπιστία',
+    ],
+    howItWorks: ['Ερώτηση', 'Αναζήτηση', 'Σύνθεση', 'Αναφορά'],
+    statsSubQ: 'Υπο-ερωτήματα',
+    statsSources: 'Πηγές',
+    statsReport: 'Αναφορά',
+    pressEnter: 'Πατήστε Enter για έναρξη',
 
     somethingWentWrong: 'Κάτι πήγε στραβά.',
   },
