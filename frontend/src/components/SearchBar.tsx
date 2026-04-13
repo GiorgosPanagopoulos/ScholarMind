@@ -39,9 +39,9 @@ export function SearchBar({ onSearch, onReset, isLoading, hasResult, lang }: Pro
                 onClick={() => setCitationFormat(fmt)}
                 disabled={isLoading}
                 className={[
-                  'flex flex-col items-center min-w-[80px] px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200 disabled:opacity-50',
+                  'flex flex-col items-center min-w-20 px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200 disabled:opacity-50',
                   citationFormat === fmt
-                    ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/25'
+                    ? 'bg-linear-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/25'
                     : 'text-gray-400 hover:text-gray-200',
                 ].join(' ')}
               >

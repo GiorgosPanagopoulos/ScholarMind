@@ -127,7 +127,7 @@ export default function App() {
       <div className="relative flex items-center bg-slate-800/60 backdrop-blur-sm rounded-full p-1 border border-white/10">
         {/* Sliding indicator */}
         <div
-          className="absolute top-1 bottom-1 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/30 transition-all duration-300 ease-in-out pointer-events-none"
+          className="absolute top-1 bottom-1 rounded-full bg-linear-to-r from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/30 transition-all duration-300 ease-in-out pointer-events-none"
           style={{
             width: 'calc(50% - 4px)',
             left: lang === 'EN' ? '4px' : 'calc(50%)',
