@@ -173,7 +173,7 @@ export default function App() {
       ══════════════════════════════════════════════════════════════ */}
       {isIdle && (
         <div className="relative z-10 h-10 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/6">
-          <div className="max-w-6xl mx-auto px-4 h-full flex items-center justify-between gap-3">
+          <div className="w-full px-4 h-full flex items-center justify-between gap-3">
             <Controls />
           </div>
         </div>
@@ -184,14 +184,18 @@ export default function App() {
       ══════════════════════════════════════════════════════════════ */}
       {!isIdle && (
         <header className="fixed top-0 left-0 right-0 h-12 z-30 bg-slate-900/90 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20">
-          <div className="max-w-6xl mx-auto px-4 h-full flex items-center">
-            <div className="flex items-center gap-2 shrink-0">
-              <Brain className="w-5 h-5 text-indigo-400 logo-pulse" />
-              <span className="text-xl font-bold tracking-tight">
+          <div className="w-full px-4 h-full grid grid-cols-3 items-center">
+            {/* Left: empty spacer */}
+            <div />
+            {/* Center: title */}
+            <div className="flex items-center justify-center gap-2">
+              <Brain className="w-9 h-9 text-indigo-400 logo-pulse" />
+              <span className="text-3xl font-bold tracking-tight">
                 Scholar<span className="text-indigo-400"> Mind</span>
               </span>
             </div>
-            <div className="ml-auto flex items-center gap-2 md:gap-3">
+            {/* Right: controls */}
+            <div className="flex items-center justify-end gap-2 md:gap-3">
               <Controls />
             </div>
           </div>
@@ -226,7 +230,7 @@ export default function App() {
             </div>
 
             {/* Content column */}
-            <div className="relative flex flex-col items-center gap-6 px-4 pt-8 pb-12 max-w-6xl mx-auto w-full fade-in-up">
+            <div className="relative flex flex-col items-center gap-6 px-4 pt-8 pb-12 w-full fade-in-up">
 
               {/* 1. Large centered logo */}
               <div className="flex items-center justify-center gap-3 w-full text-center mb-4">
@@ -338,7 +342,7 @@ export default function App() {
         ) : (
 
           /* ── Active pipeline layout ── */
-          <div className="max-w-5xl mx-auto w-full px-3 md:px-6 py-6 md:py-10 space-y-6 md:space-y-8">
+          <div className="w-full px-3 md:px-6 py-6 md:py-10 space-y-6 md:space-y-8">
 
             <SearchBar
               onSearch={startResearch}
@@ -395,7 +399,7 @@ export default function App() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 border-t border-white/6 mt-auto">
-        <div className="max-w-5xl mx-auto px-3 md:px-6 py-4 text-center">
+        <div className="w-full px-3 md:px-6 py-4 text-center">
           <span className="text-xs text-slate-700 font-mono">Built by Georgios Panagopoulos</span>
         </div>
       </footer>
