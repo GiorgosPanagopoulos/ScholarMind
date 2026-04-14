@@ -6,11 +6,15 @@ import re
 from datetime import datetime
 from io import BytesIO
 
+import os
+
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     HRFlowable,
     PageBreak,
@@ -18,6 +22,27 @@ from reportlab.platypus import (
     SimpleDocTemplate,
     Spacer,
 )
+
+# Register a Unicode font that supports Greek
+def _register_unicode_font():
+    # Try to find a system font that supports Greek
+    font_paths = [
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/System/Library/Fonts/Helvetica.ttc",
+        "/Library/Fonts/Arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    ]
+    for path in font_paths:
+        if os.path.exists(path):
+            try:
+                pdfmetrics.registerFont(TTFont("UnicodeFont", path))
+                return "UnicodeFont"
+            except Exception:
+                continue
+    return None
+
+UNICODE_FONT = _register_unicode_font()
 
 
 # ---------------------------------------------------------------------------
@@ -38,6 +63,9 @@ def _clean_markdown(text: str) -> str:
 
 def _make_styles() -> dict:
     base = getSampleStyleSheet()
+    _font = UNICODE_FONT or "Helvetica"
+    _font_bold = UNICODE_FONT or "Helvetica-Bold"
+    _font_bold_oblique = UNICODE_FONT or "Helvetica-BoldOblique"
 
     title_style = ParagraphStyle(
         "ReportTitle",
@@ -46,7 +74,7 @@ def _make_styles() -> dict:
         textColor=colors.HexColor("#1e3a5f"),
         spaceAfter=6,
         alignment=TA_CENTER,
-        fontName="Helvetica-Bold",
+        fontName=_font_bold,
     )
     subtitle_style = ParagraphStyle(
         "Subtitle",
@@ -55,7 +83,7 @@ def _make_styles() -> dict:
         textColor=colors.HexColor("#4a6fa5"),
         spaceAfter=4,
         alignment=TA_CENTER,
-        fontName="Helvetica",
+        fontName=_font,
     )
     date_style = ParagraphStyle(
         "DateStyle",
@@ -72,7 +100,7 @@ def _make_styles() -> dict:
         textColor=colors.HexColor("#1e3a5f"),
         spaceBefore=18,
         spaceAfter=8,
-        fontName="Helvetica-Bold",
+        fontName=_font_bold,
     )
     h2_style = ParagraphStyle(
         "H2",
@@ -81,7 +109,7 @@ def _make_styles() -> dict:
         textColor=colors.HexColor("#2c5282"),
         spaceBefore=12,
         spaceAfter=6,
-        fontName="Helvetica-Bold",
+        fontName=_font_bold,
     )
     h3_style = ParagraphStyle(
         "H3",
@@ -90,7 +118,7 @@ def _make_styles() -> dict:
         textColor=colors.HexColor("#2b6cb0"),
         spaceBefore=8,
         spaceAfter=4,
-        fontName="Helvetica-BoldOblique",
+        fontName=_font_bold_oblique,
     )
     body_style = ParagraphStyle(
         "Body",
@@ -99,7 +127,7 @@ def _make_styles() -> dict:
         leading=15,
         spaceAfter=8,
         alignment=TA_JUSTIFY,
-        fontName="Helvetica",
+        fontName=_font,
     )
     bullet_style = ParagraphStyle(
         "Bullet",
@@ -109,7 +137,7 @@ def _make_styles() -> dict:
         spaceAfter=4,
         leftIndent=20,
         bulletIndent=10,
-        fontName="Helvetica",
+        fontName=_font,
     )
     ref_style = ParagraphStyle(
         "Reference",
@@ -119,7 +147,7 @@ def _make_styles() -> dict:
         spaceAfter=4,
         leftIndent=20,
         firstLineIndent=-20,
-        fontName="Helvetica",
+        fontName=_font,
         textColor=colors.HexColor("#2b6cb0"),
     )
 
@@ -139,7 +167,7 @@ def _make_styles() -> dict:
 def _add_page_number(canvas, doc):
     """Footer callback: page number centred at bottom."""
     canvas.saveState()
-    canvas.setFont("Helvetica", 8)
+    canvas.setFont(UNICODE_FONT or "Helvetica", 8)
     canvas.setFillColor(colors.grey)
     page_num_text = f"Page {doc.page}"
     canvas.drawCentredString(A4[0] / 2.0, 1.5 * cm, page_num_text)
