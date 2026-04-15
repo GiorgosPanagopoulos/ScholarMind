@@ -4,8 +4,14 @@ import json
 import uuid
 from datetime import datetime
 
+import os
+
 import chromadb
 from sentence_transformers import SentenceTransformer
+
+# Resolve chroma_db path relative to this file so it works regardless of CWD
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_CHROMA_PATH = os.path.join(_PROJECT_ROOT, "data", "chroma_db")
 
 
 class RAGPipeline:
@@ -13,7 +19,7 @@ class RAGPipeline:
 
     def __init__(self):
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
-        self.client = chromadb.PersistentClient(path="./data/chroma_db")
+        self.client = chromadb.PersistentClient(path=_CHROMA_PATH)
         self.collection = self._get_or_create_collection()
 
     # ------------------------------------------------------------------
