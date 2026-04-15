@@ -56,6 +56,25 @@ _synthesizes sources with confidence scoring, and writes citation-rich academic 
 
 <br/>
 
+## 📸 Screenshots
+
+### 🔎 Search & Citation Style
+![Search Bar](docs/screenshots/search-bar.png)
+
+### 📡 Live Research Pipeline
+![Pipeline](docs/screenshots/pipeline.png)
+
+### 📝 Generated Report
+![Report](docs/screenshots/report.png)
+
+### 💬 Follow-Up Q&A
+![Follow-Up](docs/screenshots/follow-up.png)
+
+### 📄 PDF Export
+![PDF Export](docs/screenshots/pdf-export.png)
+
+<br/>
+
 ## 🏛️ Architecture
 
 ```mermaid
