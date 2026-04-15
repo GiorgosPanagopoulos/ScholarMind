@@ -251,25 +251,6 @@ MIT
 
 <div align="center">
 
-<br/>
-
-### ⚡ Built by
-
-**Georgios Panagopoulos**
-
-Full-Stack Developer
-
-[![GitHub](https://img.shields.io/badge/GitHub-GiorgosPanagopoulos-181717?style=flat-square&logo=github)](https://github.com/GiorgosPanagopoulos)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Georgios_Panagopoulos-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/georgios-panagopoulos-9253842ba)
-
-<sub>☕ Powered by mass amounts of caffeine & mass amounts of curiosity</sub>
-
-</div>
-
----
-
-<div align="center">
-
 **⚡ Built by [Georgios Panagopoulos](https://github.com/GiorgosPanagopoulos)**
 
 *"I build things I'd trust with something that matters."*
